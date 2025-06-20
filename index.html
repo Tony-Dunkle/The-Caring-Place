@@ -197,7 +197,6 @@
             align-items: center;
             white-space: nowrap; /* Ensure content stays on one line */
             margin-bottom: 0.5rem; /* Space between numbers in a column */
-            width: 100%; /* Make items fill column width */
             cursor: pointer; /* Added for unselection */
         }
         .error-message { /* Keeping this just in case for future use, though not used currently */
@@ -452,6 +451,15 @@
             </div>
         </div>
 
+        <!-- New: Called Numbers Count -->
+        <div id="calledNumbersCountDisplay" class="bg-gray-700 text-purple-300 rounded-lg px-4 py-2 text-center text-lg font-bold shadow-md mt-4">
+            Numbers Called: 0
+        </div>
+        <!-- New: Bingo Estimate Display -->
+        <div id="bingoEstimateDisplay" class="bg-gray-700 text-purple-300 rounded-lg px-4 py-2 text-center text-md mt-2 shadow-md">
+            Bingo Estimation: ---
+        </div>
+
         <!-- Current Number Display -->
         <div class="w-full flex justify-start">
             <div id="currentNumberDisplay" class="number-display">
@@ -496,6 +504,12 @@
                 <li>Enjoy the Game: Most importantly, have fun and enjoy playing with your friends!</li>
             </ul>
         </div>
+
+        <!-- Import/Export Buttons -->
+        <div class="flex flex-col sm:flex-row items-center justify-center w-full gap-4 mt-6">
+            <button id="exportGameDataBtn" class="control-button text-sm px-4 py-2">Export Game Data</button>
+            <button id="importGameDataBtn" class="control-button text-sm px-4 py-2">Import Game Data</button>
+        </div>
     </div>
 
     <!-- Reset Game Button -->
@@ -515,12 +529,24 @@
         </div>
     </div>
 
+    <!-- New: Import Data Modal -->
+    <div id="importDataModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-button" id="closeImportModalBtn">&times;</button>
+            <h2 class="text-3xl font-bold text-center text-purple-400 mb-4">Import Game Data</h2>
+            <textarea id="importDataTextarea" class="w-full h-48 p-4 bg-gray-800 text-gray-200 border border-purple-500 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm" placeholder="Paste your exported game data here..."></textarea>
+            <div class="flex justify-end w-full gap-4 mt-4">
+                <button id="importDataConfirmBtn" class="control-button text-sm px-4 py-2">Import</button>
+                <button id="importDataCancelBtn" class="control-button text-sm px-4 py-2 bg-gray-500 hover:bg-gray-600">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // DOM Elements
         const currentNumberDisplay = document.getElementById('currentNumberDisplay');
         const resetGameBtn = document.getElementById('resetGameBtn');
         const calledNumbersGrid = document.getElementById('calledNumbersGrid'); // This is now the container for columns
-        // const noNumbersYetMsg = document.getElementById('noNumbersYet'); // Removed as per user request
         const showAllNumbersBtn = document.getElementById('showAllNumbersBtn');
         const allNumbersModal = document.getElementById('allNumbersModal');
         const closeModalBtn = document.getElementById('closeModalBtn');
@@ -528,6 +554,18 @@
         const gameTypeSelect = document.getElementById('gameTypeSelect');
         const currentGameTypeDisplay = document.getElementById('currentGameTypeDisplay');
         const selectAllNumbersBtn = document.getElementById('selectAllNumbersBtn');
+        const calledNumbersCountDisplay = document.getElementById('calledNumbersCountDisplay');
+        const bingoEstimateDisplay = document.getElementById('bingoEstimateDisplay');
+
+        // New Import/Export Elements
+        const exportGameDataBtn = document.getElementById('exportGameDataBtn');
+        const importGameDataBtn = document.getElementById('importGameDataBtn');
+        const importDataModal = document.getElementById('importDataModal');
+        const closeImportModalBtn = document.getElementById('closeImportModalBtn');
+        const importDataTextarea = document.getElementById('importDataTextarea');
+        const importDataConfirmBtn = document.getElementById('importDataConfirmBtn');
+        const importDataCancelBtn = document.getElementById('importDataCancelBtn');
+
 
         // Game State Variables
         let calledCombinations = new Set();
@@ -545,6 +583,71 @@
             'O': { min: 61, max: 75 }
         };
         const bingoLetters = ['B', 'I', 'N', 'G', 'O'];
+
+        /**
+         * Updates the display of how many unique numbers have been called.
+         */
+        function updateNumbersCountDisplay() {
+            calledNumbersCountDisplay.textContent = `Numbers Called: ${calledCombinations.size}`;
+        }
+
+        /**
+         * Estimates the possibility of bingo based on game type and called numbers.
+         */
+        function updateBingoEstimate() {
+            const currentSelectedGameType = gameTypeSelect.value;
+            let estimateText = "Bingo Estimation: ";
+
+            switch (currentSelectedGameType) {
+                case 'standard':
+                    const calledCount = calledCombinations.size;
+                    if (calledCount < 10) {
+                        estimateText += "Game just started, many bingos possible!";
+                    } else if (calledCount >= 10 && calledCount <= 30) {
+                        estimateText += "Players getting closer, bingos becoming likely.";
+                    } else if (calledCount > 30 && calledCount < 75) {
+                        estimateText += "Multiple bingos are very likely now!";
+                    } else if (calledCount === 75) {
+                        estimateText += "All numbers called - Blackout likely!";
+                    }
+                    break;
+                case 'four-corners':
+                    const cornerNumbers = ['B-1', 'B-15', 'O-61', 'O-75']; // Assuming standard card corners, this is a rough estimate
+                    let cornersCalled = 0;
+                    cornerNumbers.forEach(corner => {
+                        if (calledCombinations.has(corner)) {
+                            cornersCalled++;
+                        }
+                    });
+                    if (cornersCalled === 4 && calledCombinations.size >= 4) { // Ensure at least 4 numbers called for 4 corners
+                        estimateText += "Four corners hit! Bingo!";
+                    } else {
+                        estimateText += `Corners hit: ${cornersCalled}/4. Keep an eye out!`;
+                    }
+                    break;
+                case 'blackout':
+                    const percentComplete = ((calledCombinations.size / 75) * 100).toFixed(0);
+                    if (calledCombinations.size === 75) {
+                        estimateText = "Bingo Estimation: BLACKOUT ACHIEVED!";
+                    } else {
+                        estimateText += `${percentComplete}% complete. Almost there!`;
+                    }
+                    break;
+                case 'custom':
+                    estimateText += "Estimation not available for custom games.";
+                    break;
+                default:
+                    estimateText += "Select a game type for estimation.";
+            }
+            bingoEstimateDisplay.textContent = estimateText;
+        }
+        
+        /**
+         * Updates the displayed text for the current game type.
+         */
+        function updateGameTypeDisplay() {
+            currentGameTypeDisplay.textContent = gameTypeSelect.options[gameTypeSelect.selectedIndex].text;
+        }
 
         /**
          * Initializes or resets the game state.
@@ -571,13 +674,13 @@
                 calledColumns[letter] = columnDiv; // Store reference to the column element
             }
             
-            // The 'noNumbersYetMsg' element is no longer used, so no need to manipulate it here.
-
             updateAllCallableNumbersDisplay(); // Update the modal's display
             
             // Reset game type display to default
             gameTypeSelect.value = 'standard';
             updateGameTypeDisplay();
+            updateNumbersCountDisplay(); // Update new count display
+            updateBingoEstimate(); // Update new estimate display
             console.log('Game initialized.');
         }
 
@@ -633,6 +736,8 @@
 
             updateCalledNumbersDisplay(); // Refresh the main grid of called numbers
             updateAllCallableNumbersDisplay(); // Refresh the modal's display to reflect the change
+            updateNumbersCountDisplay(); // Update new count display
+            updateBingoEstimate(); // Update new estimate display
         }
 
         /**
@@ -679,6 +784,8 @@
 
             updateCalledNumbersDisplay();
             updateAllCallableNumbersDisplay(); // Refresh modal to show all numbers as called
+            updateNumbersCountDisplay(); // Update new count display
+            updateBingoEstimate(); // Update new estimate display
 
             console.log('All uncalled numbers selected.');
             allNumbersModal.classList.remove('show'); // Optionally close the modal
@@ -686,7 +793,6 @@
 
         /**
          * Updates the display of all previously called numbers in the main grid (now columnar).
-         * The `noNumbersYetMsg` is no longer managed here.
          */
         function updateCalledNumbersDisplay() {
             // Clear numbers from all columns first
@@ -758,20 +864,111 @@
         }
 
         /**
-         * Updates the displayed text for the current game type.
+         * Exports the current game data (called numbers) to the clipboard.
          */
-        function updateGameTypeDisplay() {
-            currentGameTypeDisplay.textContent = gameTypeSelect.options[gameTypeSelect.selectedIndex].text;
+        function exportGameData() {
+            const dataToExport = {
+                calledCombinations: Array.from(calledCombinations), // Convert Set to Array for JSON
+                calledNumbersDisplay: calledNumbersDisplay // Already an array
+            };
+            const jsonData = JSON.stringify(dataToExport);
+
+            // Use document.execCommand('copy') for clipboard operations in iframes
+            const textarea = document.createElement('textarea');
+            textarea.value = jsonData;
+            textarea.style.position = 'fixed'; // Avoid scrolling to bottom
+            textarea.style.left = '-9999px'; // Move out of screen
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                const successful = document.execCommand('copy');
+                const msg = successful ? 'Game data copied to clipboard!' : 'Failed to copy game data.';
+                console.log(msg);
+                // Optionally provide user feedback in UI
+                alert(msg); // Using alert for simple feedback, can be replaced with custom modal
+            } catch (err) {
+                console.error('Oops, unable to copy', err);
+                alert('Failed to copy game data. Please try manually copying from console if developer tools are open.');
+            } finally {
+                document.body.removeChild(textarea);
+            }
         }
+
+        /**
+         * Opens the import data modal.
+         */
+        function showImportDataModal() {
+            importDataTextarea.value = ''; // Clear previous data
+            importDataModal.classList.add('show');
+        }
+
+        /**
+         * Imports game data from the textarea.
+         */
+        function importGameData() {
+            const rawData = importDataTextarea.value;
+            if (!rawData) {
+                alert("Please paste game data into the text area.");
+                return;
+            }
+
+            try {
+                const parsedData = JSON.parse(rawData);
+
+                // Basic validation of imported data structure
+                if (!parsedData || !Array.isArray(parsedData.calledCombinations) || !Array.isArray(parsedData.calledNumbersDisplay)) {
+                    alert("Invalid data format. Please paste valid exported game data.");
+                    return;
+                }
+
+                // Clear current game state
+                calledCombinations.clear();
+                calledNumbersDisplay = [];
+
+                // Populate with imported data
+                parsedData.calledCombinations.forEach(combo => calledCombinations.add(combo));
+                parsedData.calledNumbersDisplay = parsedData.calledNumbersDisplay.filter(combo => calledCombinations.has(combo)); // Ensure consistency
+
+                // Re-sort the imported calledNumbersDisplay to maintain correct order
+                calledNumbersDisplay = parsedData.calledNumbersDisplay.sort((a, b) => {
+                    const letterOrder = bingoLetters.indexOf(a.charAt(0)) - bingoLetters.indexOf(b.charAt(0));
+                    if (letterOrder !== 0) return letterOrder;
+                    const numA = parseInt(a.substring(a.indexOf('-') + 1), 10);
+                    const numB = parseInt(b.substring(b.indexOf('-') + 1), 10);
+                    return numA - numB;
+                });
+
+                // Update current number display based on imported data
+                currentNumberDisplay.textContent = calledNumbersDisplay.length > 0 ? calledNumbersDisplay[calledNumbersDisplay.length - 1] : '--';
+                currentNumberDisplay.classList.remove('pop');
+                void currentNumberDisplay.offsetWidth; // Trigger reflow
+                currentNumberDisplay.classList.add('pop');
+
+
+                updateCalledNumbersDisplay();
+                updateAllCallableNumbersDisplay();
+                updateNumbersCountDisplay();
+                updateBingoEstimate();
+
+                alert("Game data imported successfully!");
+                importDataModal.classList.remove('show'); // Close modal on success
+
+            } catch (error) {
+                console.error("Error importing data:", error);
+                alert("Failed to import data. Please ensure the pasted text is valid JSON from a previous export.");
+            }
+        }
+
 
         // Event Listeners
         // Game Type Select Listener
         gameTypeSelect.addEventListener('change', updateGameTypeDisplay);
+        gameTypeSelect.addEventListener('change', updateBingoEstimate);
 
         // Select All Button Listener
         selectAllNumbersBtn.addEventListener('click', selectAllUncalledNumbers);
 
-        // Modal Event Listeners
+        // Modal Event Listeners (for All Callable Numbers)
         showAllNumbersBtn.addEventListener('click', () => {
             updateAllCallableNumbersDisplay();
             allNumbersModal.classList.add('show');
@@ -786,6 +983,19 @@
                 allNumbersModal.classList.remove('show');
             }
         });
+
+        // Import/Export Event Listeners (New)
+        exportGameDataBtn.addEventListener('click', exportGameData);
+        importGameDataBtn.addEventListener('click', showImportDataModal);
+        importDataConfirmBtn.addEventListener('click', importGameData);
+        closeImportModalBtn.addEventListener('click', () => importDataModal.classList.remove('show'));
+        importDataCancelBtn.addEventListener('click', () => importDataModal.classList.remove('show'));
+        importDataModal.addEventListener('click', (event) => {
+            if (event.target === importDataModal) {
+                importDataModal.classList.remove('show');
+            }
+        });
+
 
         // Event listener for the Reset Game button
         resetGameBtn.addEventListener('click', initializeGame);
