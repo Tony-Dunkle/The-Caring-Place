@@ -152,16 +152,35 @@
         .reset-button:hover {
             background-color: #b91c1c; /* Darker red on hover */
         }
-        .called-numbers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        /* New styles for the columnar called numbers grid */
+        .called-numbers-columns {
+            display: flex;
+            justify-content: space-around; /* Distribute columns evenly */
             gap: 0.75rem;
-            max-height: 450px; /* Increased height */
-            overflow-y: auto;
+            max-height: 650px; /* Maintained height for overall section */
+            overflow-y: auto; /* Still allow scrolling if too many numbers */
             padding: 1rem;
-            background-color: #4a5568; /* Dark gray for the grid background */
+            background-color: #4a5568;
             border-radius: 0.75rem;
-            border: 1px solid #4a5568; /* Darker border */
+            border: 1px solid #4a5568;
+            width: 100%; /* Ensure it takes full width */
+        }
+        .called-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 1;
+            padding: 0.5rem;
+            border: 1px solid #3d4657; /* Slightly lighter border for inner columns */
+            border-radius: 0.5rem;
+            min-width: 65px; /* Minimum width for each column to prevent squishing */
+        }
+        .called-column-header {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #c084fc;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 8px rgba(192, 132, 252, 0.3);
         }
         .called-number-item {
             background-color: #6b46c1; /* Tailwind Purple-700 for individual numbers */
@@ -175,7 +194,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            white-space: nowrap; /* Ensure content stays on one line */
+            margin-bottom: 0.5rem; /* Space between numbers in a column */
+            width: 100%; /* Make items fill column width */
         }
+        /* Remove specific grid styling for the main container now that it's flex */
+        /* .called-numbers-grid { ... removed or modified ... } */
+
         .error-message { /* Keeping this just in case for future use, though not used currently */
             color: #f87171; /* Tailwind Red-400 for error messages */
             font-size: 1.1rem;
@@ -238,6 +263,9 @@
             position: relative;
             color: #e2e8f0; /* Light text for modal */
             border: 1px solid #6b46c1; /* Added a subtle purple border */
+            display: flex; /* Make it a flex container */
+            flex-direction: column; /* Stack children vertically */
+            align-items: center; /* Center horizontally */
         }
         .modal-close-button {
             position: absolute;
@@ -253,6 +281,14 @@
         .modal-close-button:hover {
             color: #cbd5e0; /* Lighter gray on hover */
         }
+        .modal-top-controls {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end; /* Align to the right for now */
+            margin-bottom: 1.5rem;
+            gap: 1rem; /* Space between buttons */
+            padding-right: 2.5rem; /* Account for close button position */
+        }
         /* All numbers grid and column layout */
         .all-numbers-grid-container {
             display: flex;
@@ -260,6 +296,7 @@
             justify-content: center;
             gap: 1rem; /* Space between columns */
             flex-wrap: wrap; /* Allow columns to wrap on smaller screens */
+            width: 100%; /* Ensure it takes full width of modal content */
         }
         .bingo-column {
             display: flex;
@@ -288,7 +325,7 @@
             padding: 0.6rem;
             border-radius: 0.3rem;
             text-align: center;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+            box-shadow: inset /* Changed to inset for a different look */ 0 1px 3px rgba(0, 0, 0, 0.2);
             transition: background-color 0.2s ease, color 0.2s ease;
             width: 100%; /* Make items take full column width */
             cursor: pointer; /* Indicate clickability */
@@ -345,10 +382,18 @@
                 font-size: 1.4rem;
                 padding: 0.8rem 1.8rem;
             }
-            .called-numbers-grid {
-                grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-                font-size: 1.2rem;
-                max-height: 350px;
+            .called-numbers-columns {
+                flex-direction: column; /* Stack columns vertically on mobile */
+                max-height: 350px; /* Adjusted height for mobile */
+            }
+            .called-column {
+                width: 80%; /* Give columns more width when stacked */
+                max-width: 150px; /* Limit max width for a single column */
+                flex-basis: auto;
+                margin-bottom: 0.75rem; /* Add space between stacked columns */
+            }
+            .called-column-header {
+                font-size: 1.5rem;
             }
             .called-number-item {
                 font-size: 1.2rem;
@@ -373,6 +418,10 @@
                 font-size: 1.5rem;
                 top: 0.5rem;
                 right: 0.5rem;
+            }
+            .modal-top-controls {
+                justify-content: center; /* Center buttons on mobile */
+                padding-right: 0;
             }
             .all-numbers-grid-container {
                 flex-direction: column;
@@ -403,37 +452,36 @@
             </div>
         </div>
 
-        <!-- Current Number Display (Moved Here to the Left) -->
+        <!-- Current Number Display -->
         <div class="w-full flex justify-start">
             <div id="currentNumberDisplay" class="number-display">
                 --
             </div>
         </div>
 
-        <!-- Game Type Selection Section -->
-        <div class="game-type-section w-full mb-4 text-center">
-            <label for="gameTypeSelect" class="text-xl font-bold text-gray-200 block mb-2">Select Game Type:</label>
-            <select id="gameTypeSelect" class="bg-gray-700 text-purple-300 border border-purple-500 rounded-md p-2 text-lg focus:outline-none focus:ring-2 focus:ring-purple-400">
-                <option value="standard">Standard Bingo (5 in a row)</option>
-                <option value="four-corners">Four Corners</option>
-                <option value="blackout">Blackout / Coverall</option>
-                <option value="custom">Custom Pattern (Explain to players)</option>
-            </select>
-            <p class="text-2xl font-bold text-purple-300 mt-4">Current Game: <span id="currentGameTypeDisplay">Standard Bingo (5 in a row)</span></p>
-        </div>
-
         <!-- Called Numbers Section -->
         <div class="w-full">
             <h2 class="text-3xl font-bold text-gray-200 mb-4 text-center">Called Numbers</h2>
-            <div id="calledNumbersGrid" class="called-numbers-grid">
-                <!-- Numbers will be dynamically added here -->
+            <div id="calledNumbersGrid" class="called-numbers-columns">
+                <!-- Columns for B, I, N, G, O will be dynamically added here by JavaScript -->
                 <p id="noNumbersYet" class="text-gray-400 text-center col-span-full text-lg">No numbers called yet.</p>
             </div>
         </div>
 
         <!-- Controls -->
         <div class="flex flex-col items-center w-full gap-4 mt-4">
-            <button id="showAllNumbersBtn" class="control-button">Show All Callable Numbers</button>
+            <button id="showAllNumbersBtn" class="control-button">Select Number</button>
+            <!-- Game Type Selection Section -->
+            <div class="game-type-section w-full mb-4 text-center">
+                <label for="gameTypeSelect" class="text-xl font-bold text-gray-200 block mb-2">Select Game Type:</label>
+                <select id="gameTypeSelect" class="bg-gray-700 text-purple-300 border border-purple-500 rounded-md p-2 text-lg focus:outline-none focus:ring-2 focus:ring-purple-400">
+                    <option value="standard">Standard Bingo (5 in a row)</option>
+                    <option value="four-corners">Four Corners</option>
+                    <option value="blackout">Blackout / Coverall</option>
+                    <option value="custom">Custom Pattern (Explain to players)</option>
+                </select>
+                <p class="text-2xl font-bold text-purple-300 mt-4">Current Game: <span id="currentGameTypeDisplay">Standard Bingo (5 in a row)</span></p>
+            </div>
         </div>
 
         <!-- Bingo Rules Section -->
@@ -459,6 +507,9 @@
         <div class="modal-content">
             <button class="modal-close-button" id="closeModalBtn">&times;</button>
             <h2 class="text-3xl font-bold text-center text-purple-400 mb-4">All Possible Bingo Numbers</h2>
+            <div class="modal-top-controls">
+                <button id="selectAllNumbersBtn" class="control-button text-sm px-4 py-2">Select All Uncalled</button>
+            </div>
             <div id="allNumbersGridContainer" class="all-numbers-grid-container">
                 <!-- Columns for B, I, N, G, O will be dynamically generated here -->
             </div>
@@ -469,7 +520,7 @@
         // DOM Elements
         const currentNumberDisplay = document.getElementById('currentNumberDisplay');
         const resetGameBtn = document.getElementById('resetGameBtn');
-        const calledNumbersGrid = document.getElementById('calledNumbersGrid');
+        const calledNumbersGrid = document.getElementById('calledNumbersGrid'); // This is now the container for columns
         const noNumbersYetMsg = document.getElementById('noNumbersYet');
         const showAllNumbersBtn = document.getElementById('showAllNumbersBtn');
         const allNumbersModal = document.getElementById('allNumbersModal');
@@ -477,10 +528,14 @@
         const allNumbersGridContainer = document.getElementById('allNumbersGridContainer');
         const gameTypeSelect = document.getElementById('gameTypeSelect');
         const currentGameTypeDisplay = document.getElementById('currentGameTypeDisplay');
+        const selectAllNumbersBtn = document.getElementById('selectAllNumbersBtn');
 
         // Game State Variables
         let calledCombinations = new Set();
-        let calledNumbersDisplay = [];
+        let calledNumbersDisplay = []; // This array holds all called combinations, sorted
+        // A map to quickly access column elements
+        const calledColumns = {}; // { 'B': element, 'I': element, ... }
+
 
         // Bingo Number Ranges for Validation
         const bingoRanges = {
@@ -500,11 +555,30 @@
             calledCombinations.clear();
             calledNumbersDisplay = [];
             currentNumberDisplay.textContent = '--';
-            updateCalledNumbersDisplay();
-            updateAllCallableNumbersDisplay();
-            if (noNumbersYetMsg) {
-                noNumbersYetMsg.style.display = 'block';
+            
+            // Clear and re-create column structure for called numbers
+            calledNumbersGrid.innerHTML = '';
+            for (const letter of bingoLetters) {
+                const columnDiv = document.createElement('div');
+                columnDiv.classList.add('called-column');
+                columnDiv.id = `called-column-${letter}`; // Assign an ID for easy lookup
+
+                const columnHeader = document.createElement('div');
+                columnHeader.classList.add('called-column-header');
+                columnHeader.textContent = letter;
+                columnDiv.appendChild(columnHeader);
+
+                calledNumbersGrid.appendChild(columnDiv);
+                calledColumns[letter] = columnDiv; // Store reference to the column element
             }
+            
+            // Ensure noNumbersYetMsg is properly placed and visible initially
+            calledNumbersGrid.appendChild(noNumbersYetMsg);
+            noNumbersYetMsg.style.display = 'block';
+
+
+            updateAllCallableNumbersDisplay(); // Update the modal's display
+            
             // Reset game type display to default
             gameTypeSelect.value = 'standard';
             updateGameTypeDisplay();
@@ -537,34 +611,103 @@
             void currentNumberDisplay.offsetWidth; // Trigger reflow
             currentNumberDisplay.classList.add('pop');
 
-            updateCalledNumbersDisplay();
-            updateAllCallableNumbersDisplay();
+            updateCalledNumbersDisplay(); // Refresh the main grid of called numbers
+            updateAllCallableNumbersDisplay(); // Refresh the modal's display to mark the number as called
 
             console.log(`Called: ${combination}. Total unique called: ${calledCombinations.size}`);
         }
 
         /**
-         * Updates the display of all previously called numbers in the main grid.
+         * Calls all currently uncalled numbers.
+         */
+        function selectAllUncalledNumbers() {
+            let lastCalledCombination = '';
+            const allPossibleNumbers = [];
+            for (const letter in bingoRanges) {
+                const range = bingoRanges[letter];
+                for (let i = range.min; i <= range.max; i++) {
+                    allPossibleNumbers.push(`${letter}-${i}`);
+                }
+            }
+
+            allPossibleNumbers.forEach(combination => {
+                if (!calledCombinations.has(combination)) {
+                    calledCombinations.add(combination);
+                    calledNumbersDisplay.push(combination);
+                    lastCalledCombination = combination; // Keep track of the last one
+                }
+            });
+
+            // Re-sort the entire list after adding many numbers
+            calledNumbersDisplay.sort((a, b) => {
+                const letterOrder = bingoLetters.indexOf(a.charAt(0)) - bingoLetters.indexOf(b.charAt(0));
+                if (letterOrder !== 0) return letterOrder;
+                const numA = parseInt(a.substring(a.indexOf('-') + 1), 10);
+                const numB = parseInt(b.substring(b.indexOf('-') + 1), 10);
+                return numA - numB;
+            });
+
+            // Update current number display with the last one called, or a default
+            currentNumberDisplay.textContent = lastCalledCombination || '--';
+            currentNumberDisplay.classList.remove('pop');
+            void currentNumberDisplay.offsetWidth; // Trigger reflow
+            currentNumberDisplay.classList.add('pop');
+
+            updateCalledNumbersDisplay();
+            updateAllCallableNumbersDisplay(); // Refresh modal to show all numbers as called
+
+            console.log('All uncalled numbers selected.');
+            // Optionally close the modal after selecting all
+            allNumbersModal.classList.remove('show');
+        }
+
+        /**
+         * Updates the display of all previously called numbers in the main grid (now columnar).
          * Handles showing/hiding the "No numbers yet" message.
          */
         function updateCalledNumbersDisplay() {
-            calledNumbersGrid.innerHTML = '';
+            // Clear numbers from all columns first
+            for (const letter of bingoLetters) {
+                const column = calledColumns[letter];
+                // Keep only the header element, remove all other children (numbers)
+                while (column.children.length > 1) { // header is the first child
+                    column.removeChild(column.lastChild);
+                }
+            }
 
             if (calledNumbersDisplay.length === 0) {
-                if (noNumbersYetMsg) {
-                    noNumbersYetMsg.style.display = 'block';
-                }
+                // If no numbers have been called, ensure the "No numbers yet" message is visible
+                calledNumbersGrid.appendChild(noNumbersYetMsg); // Re-add to the main container
+                noNumbersYetMsg.style.display = 'block';
             } else {
-                if (noNumbersYetMsg) {
-                    noNumbersYetMsg.style.display = 'none';
+                // If numbers have been called, hide the "No numbers yet" message
+                if (noNumbersYetMsg.parentNode === calledNumbersGrid) {
+                    calledNumbersGrid.removeChild(noNumbersYetMsg);
                 }
+
+                // Add numbers to their respective columns, maintaining numerical order
+                // Create a temporary object to hold numbers for each column, then sort and append
+                const numbersByColumn = { 'B': [], 'I': [], 'N': [], 'G': [], 'O': [] };
                 calledNumbersDisplay.forEach(combination => {
-                    const numberDiv = document.createElement('div');
-                    numberDiv.classList.add('called-number-item');
-                    numberDiv.textContent = combination;
-                    calledNumbersGrid.appendChild(numberDiv);
+                    const letter = combination.charAt(0);
+                    const number = parseInt(combination.substring(combination.indexOf('-') + 1), 10);
+                    numbersByColumn[letter].push({ combination, number });
                 });
-                calledNumbersGrid.scrollTop = calledNumbersGrid.scrollHeight;
+
+                for (const letter of bingoLetters) {
+                    numbersByColumn[letter].sort((a, b) => a.number - b.number); // Sort numerically
+                    const targetColumn = calledColumns[letter];
+                    if (targetColumn) {
+                        numbersByColumn[letter].forEach(item => {
+                            const numberDiv = document.createElement('div');
+                            numberDiv.classList.add('called-number-item');
+                            numberDiv.textContent = item.combination;
+                            targetColumn.appendChild(numberDiv);
+                        });
+                    }
+                }
+                // No need to scroll a single grid, but could scroll individual columns if they overflow
+                // For now, overall grid overflow is managed by max-height
             }
         }
 
@@ -613,6 +756,9 @@
         // Event Listeners
         // Game Type Select Listener
         gameTypeSelect.addEventListener('change', updateGameTypeDisplay);
+
+        // Select All Button Listener
+        selectAllNumbersBtn.addEventListener('click', selectAllUncalledNumbers);
 
         // Modal Event Listeners
         showAllNumbersBtn.addEventListener('click', () => {
