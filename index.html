@@ -160,6 +160,34 @@
         .reset-button:hover {
             background-color: #b91c1c; /* Darker red on hover */
         }
+
+        /* Adjusted styling for the external link button */
+        .external-link-button {
+            background-color: #4CAF50; /* Green for external link */
+            color: white;
+            padding: 0.8rem 1.8rem; /* Adjusted for consistency */
+            font-size: 1.4rem; /* Adjusted for consistency */
+            font-weight: bold;
+            border-radius: 0.75rem;
+            text-decoration: none; /* Remove underline from link */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            display: inline-flex; /* Use flex to center content if needed */
+            align-items: center;
+            justify-content: center;
+            margin-top: 2rem; /* Add margin to separate from content above */
+        }
+        .external-link-button:hover {
+            background-color: #45a049; /* Darker green on hover */
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+        .external-link-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+
         /* New styles for the columnar called numbers grid */
         .called-numbers-columns {
             display: flex;
@@ -372,10 +400,19 @@
             }
             .logo-container {
                 width: 100%;
-                height: 80px; /* Adjusted height for smaller fluid width */
+                max-width: 250px; /* Limit logo width on very small screens */
+                height: auto; /* Maintain aspect ratio */
             }
             .logo-container img {
                 font-size: 0.75rem; /* Make alt text smaller on mobile */
+            }
+            .logo-stats-wrapper {
+                width: 100%; /* Take full width on mobile */
+            }
+            #calledNumbersCountDisplay,
+            #bingoEstimateDisplay {
+                font-size: 0.9rem; /* Smaller font for stats on mobile */
+                padding: 0.5rem 1rem;
             }
             .number-display {
                 font-size: 3.8rem; /* Adjusted for mobile, tiny bit smaller */
@@ -417,6 +454,11 @@
                 padding: 0.7rem 1.4rem; /* Adjusted for mobile */
                 font-size: 1.3rem; /* Adjusted for mobile */
             }
+            .external-link-button {
+                margin-top: 1.5rem; /* Adjusted for mobile flow */
+                padding: 0.7rem 1.4rem; /* Adjusted for mobile */
+                font-size: 1.3rem; /* Adjusted for mobile */
+            }
             .modal-content {
                 padding: 1rem;
             }
@@ -443,6 +485,59 @@
             }
             .all-number-item {
                 font-size: 0.95rem; /* Adjusted for mobile */
+            }
+        }
+
+        /* Tablet-specific adjustments (between 769px and 900px, or a larger range if desired) */
+        @media (min-width: 769px) and (max-width: 992px) {
+            .container {
+                padding: 2rem;
+                gap: 1.8rem;
+            }
+            .app-header {
+                flex-direction: row; /* Keep elements in a row if space allows */
+                flex-wrap: wrap;
+                justify-content: space-around;
+            }
+            .header-title-left {
+                font-size: 2.5rem;
+            }
+            .header-bingo-center {
+                font-size: 3.5rem;
+            }
+            .logo-stats-wrapper {
+                flex-direction: column; /* Still stack logo and stats */
+                width: auto;
+            }
+            .logo-container {
+                width: 250px; /* Slightly smaller logo on tablet */
+                height: auto;
+            }
+            #calledNumbersCountDisplay,
+            #bingoEstimateDisplay {
+                font-size: 1rem; /* Slightly smaller font for stats on tablet */
+            }
+            .number-display {
+                font-size: 6rem; /* Adjust current number size for tablet */
+                padding: 1.5rem 2.5rem;
+            }
+            .control-button {
+                font-size: 1.5rem;
+                padding: 1rem 2rem;
+            }
+            .called-numbers-columns {
+                flex-wrap: wrap; /* Allow columns to wrap if necessary */
+                justify-content: center;
+            }
+            .called-column {
+                min-width: 80px;
+                flex-basis: 18%; /* Distribute columns more evenly if space allows */
+            }
+            .rules-section {
+                font-size: 1.05rem;
+            }
+            .external-link-button {
+                margin-top: 2rem; /* Keep consistent with desktop margin */
             }
         }
     </style>
@@ -519,6 +614,9 @@
             <button id="exportGameDataBtn" class="control-button text-sm px-4 py-2">Export Game Data</button>
             <button id="importGameDataBtn" class="control-button text-sm px-4 py-2">Import Game Data</button>
         </div>
+
+        <!-- New: External Link Button - Now positioned with content flow -->
+        <a href="test.html" id="externalLinkBtn" class="external-link-button">Go to Test Page</a>
     </div>
 
     <!-- Reset Game Button -->
@@ -893,11 +991,12 @@
                 const successful = document.execCommand('copy');
                 const msg = successful ? 'Game data copied to clipboard!' : 'Failed to copy game data.';
                 console.log(msg);
-                // Optionally provide user feedback in UI
-                alert(msg); // Using alert for simple feedback, can be replaced with custom modal
+                // Using custom feedback instead of alert
+                showFeedback(msg, successful ? 'success' : 'error');
+
             } catch (err) {
                 console.error('Oops, unable to copy', err);
-                alert('Failed to copy game data. Please try manually copying from console if developer tools are open.');
+                showFeedback('Failed to copy game data. Please try manually copying.', 'error');
             } finally {
                 document.body.removeChild(textarea);
             }
@@ -917,7 +1016,8 @@
         function importGameData() {
             const rawData = importDataTextarea.value;
             if (!rawData) {
-                alert("Please paste game data into the text area.");
+                // Using custom feedback instead of alert
+                showFeedback("Please paste game data into the text area.", "error");
                 return;
             }
 
@@ -926,7 +1026,7 @@
 
                 // Basic validation of imported data structure
                 if (!parsedData || !Array.isArray(parsedData.calledCombinations) || !Array.isArray(parsedData.calledNumbersDisplay)) {
-                    alert("Invalid data format. Please paste valid exported game data.");
+                    showFeedback("Invalid data format. Please paste valid exported game data.", "error");
                     return;
                 }
 
@@ -959,13 +1059,47 @@
                 updateNumbersCountDisplay();
                 updateBingoEstimate();
 
-                alert("Game data imported successfully!");
+                showFeedback("Game data imported successfully!", "success");
                 importDataModal.classList.remove('show'); // Close modal on success
 
             } catch (error) {
                 console.error("Error importing data:", error);
-                alert("Failed to import data. Please ensure the pasted text is valid JSON from a previous export.");
+                showFeedback("Failed to import data. Please ensure the pasted text is valid JSON from a previous export.", "error");
             }
+        }
+
+        /**
+         * Displays a temporary feedback message to the user.
+         * @param {string} message - The message to display.
+         * @param {string} type - 'success' or 'error' to determine styling.
+         */
+        function showFeedback(message, type) {
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.textContent = message;
+            feedbackDiv.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: ${type === 'success' ? '#4CAF50' : '#f44336'};
+                color: white;
+                padding: 15px 25px;
+                border-radius: 8px;
+                z-index: 1001;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                opacity: 0;
+                transition: opacity 0.3s ease-in-out;
+                text-align: center;
+                max-width: 80%; /* Ensure it doesn't go off screen on small devices */
+            `;
+            document.body.appendChild(feedbackDiv);
+            setTimeout(() => {
+                feedbackDiv.style.opacity = 1;
+            }, 10);
+            setTimeout(() => {
+                feedbackDiv.style.opacity = 0;
+                feedbackDiv.addEventListener('transitionend', () => feedbackDiv.remove());
+            }, 3000); // Display for 3 seconds
         }
 
 
@@ -993,7 +1127,7 @@
             }
         });
 
-        // Import/Export Event Listeners (New)
+        // Import/Export Event Listeners
         exportGameDataBtn.addEventListener('click', exportGameData);
         importGameDataBtn.addEventListener('click', showImportDataModal);
         importDataConfirmBtn.addEventListener('click', importGameData);
