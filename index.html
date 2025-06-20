@@ -18,6 +18,7 @@
             min-height: 100vh;
             padding: 2rem;
             position: relative;
+            font-size: 0.95rem; /* Slightly smaller base font size */
         }
         .container {
             background-color: #2d3748; /* Darker gray background for the main container */
@@ -41,7 +42,7 @@
         }
         .header-title-left {
             color: #c084fc; /* Tailwind Purple-400 for header text */
-            font-size: 3rem; /* Smaller font size for "The Caring Place" */
+            font-size: 2.8rem; /* Slightly smaller */
             font-weight: bold;
             text-shadow: 0 0 10px rgba(192, 132, 252, 0.4); /* Subtle glow */
             flex-shrink: 1; /* Allow shrinking if space is tight */
@@ -49,7 +50,7 @@
         }
         .header-bingo-center {
             color: #c084fc;
-            font-size: 4rem; /* Prominent "Bingo" text */
+            font-size: 3.8rem; /* Slightly smaller */
             font-weight: bold;
             text-shadow: 0 0 15px rgba(192, 132, 252, 0.5);
             flex-grow: 1; /* Allow it to take available space */
@@ -91,17 +92,17 @@
                 text-align: center; /* Center align all elements when wrapped */
             }
             .header-title-left {
-                font-size: 2.5rem;
+                font-size: 2.3rem; /* Adjusted for smaller screens */
             }
             .header-bingo-center {
-                font-size: 3.5rem;
+                font-size: 3.2rem; /* Adjusted for smaller screens */
             }
         }
 
         .number-display {
             background-color: #7c3aed; /* Tailwind Purple-600 for current number */
             color: #ffffff;
-            font-size: 8rem;
+            font-size: 7.5rem; /* Tiny bit smaller */
             font-weight: bold;
             padding: 2rem 3rem;
             border-radius: 1rem;
@@ -122,8 +123,8 @@
         .control-button {
             background-color: #9333ea; /* Tailwind Purple-700 */
             color: white;
-            padding: 1.2rem 2.5rem;
-            font-size: 1.8rem;
+            padding: 1.1rem 2.2rem; /* Slightly smaller padding */
+            font-size: 1.6rem; /* Slightly smaller */
             font-weight: bold;
             border-radius: 0.75rem;
             cursor: pointer;
@@ -176,7 +177,7 @@
             min-width: 65px; /* Minimum width for each column to prevent squishing */
         }
         .called-column-header {
-            font-size: 1.8rem;
+            font-size: 1.7rem; /* Slightly smaller */
             font-weight: bold;
             color: #c084fc;
             margin-bottom: 0.5rem;
@@ -185,7 +186,7 @@
         .called-number-item {
             background-color: #6b46c1; /* Tailwind Purple-700 for individual numbers */
             color: #e2e8f0; /* Light text on dark background */
-            font-size: 1.6rem;
+            font-size: 1.5rem; /* Slightly smaller */
             font-weight: bold;
             padding: 0.75rem;
             border-radius: 0.5rem;
@@ -197,13 +198,11 @@
             white-space: nowrap; /* Ensure content stays on one line */
             margin-bottom: 0.5rem; /* Space between numbers in a column */
             width: 100%; /* Make items fill column width */
+            cursor: pointer; /* Added for unselection */
         }
-        /* Remove specific grid styling for the main container now that it's flex */
-        /* .called-numbers-grid { ... removed or modified ... } */
-
         .error-message { /* Keeping this just in case for future use, though not used currently */
             color: #f87171; /* Tailwind Red-400 for error messages */
-            font-size: 1.1rem;
+            font-size: 1.05rem; /* Slightly smaller */
             margin-top: 0.5rem;
             text-align: center;
             min-height: 24px;
@@ -213,12 +212,12 @@
             border: 1px solid #718096; /* Darker border */
             border-radius: 1rem;
             padding: 2rem;
-            font-size: 1.2rem;
+            font-size: 1.1rem; /* Slightly smaller */
             line-height: 1.6;
             color: #e2e8f0; /* Light text for rules */
         }
         .rules-section h3 {
-            font-size: 2rem;
+            font-size: 1.9rem; /* Slightly smaller */
             font-weight: bold;
             color: #c084fc; /* Purple heading for rules */
             margin-bottom: 1rem;
@@ -273,7 +272,7 @@
             right: 1rem;
             background: none;
             border: none;
-            font-size: 2rem;
+            font-size: 1.8rem; /* Slightly smaller */
             color: #a0aec0; /* Gray for close button */
             cursor: pointer;
             transition: color 0.2s ease;
@@ -311,7 +310,7 @@
             flex-basis: auto; /* Allow content to determine basis */
         }
         .bingo-column-header {
-            font-size: 1.8rem; /* Larger header for B, I, N, G, O */
+            font-size: 1.7rem; /* Slightly smaller */
             font-weight: bold;
             color: #c084fc; /* Purple for column headers */
             margin-bottom: 0.5rem;
@@ -320,12 +319,12 @@
         .all-number-item {
             background-color: #4a5568; /* Darker background for each number item */
             color: #e2e8f0; /* Light text */
-            font-size: 1.2rem;
+            font-size: 1.1rem; /* Slightly smaller */
             font-weight: bold;
             padding: 0.6rem;
             border-radius: 0.3rem;
             text-align: center;
-            box-shadow: inset /* Changed to inset for a different look */ 0 1px 3px rgba(0, 0, 0, 0.2);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
             transition: background-color 0.2s ease, color 0.2s ease;
             width: 100%; /* Make items take full column width */
             cursor: pointer; /* Indicate clickability */
@@ -337,14 +336,15 @@
             background-color: #9333ea; /* Purple for called numbers */
             color: white;
             box-shadow: 0 0 5px rgba(192, 132, 252, 0.7); /* Subtle glow for called numbers */
-            cursor: not-allowed; /* Indicate not clickable */
-            opacity: 0.6; /* Slightly fade called numbers */
+            cursor: pointer; /* Changed to pointer to allow unselection */
+            /* opacity: 0.6; -- Removed to make them appear more selectable */
         }
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
             body {
                 padding: 1rem;
+                font-size: 0.9rem; /* Further smaller base font size on mobile */
             }
             .container {
                 padding: 1.5rem;
@@ -357,11 +357,11 @@
                 margin-bottom: 1.5rem;
             }
             .header-title-left {
-                font-size: 2.2rem;
+                font-size: 2rem; /* Adjusted for smaller screens */
                 text-align: center;
             }
             .header-bingo-center {
-                font-size: 3rem;
+                font-size: 2.8rem; /* Adjusted for smaller screens */
                 padding: 0;
             }
             .header-image-container {
@@ -369,18 +369,18 @@
                 height: 80px; /* Adjusted height for smaller fluid width */
             }
             .header-image-container img {
-                font-size: 0.8rem; /* Make alt text smaller on mobile */
+                font-size: 0.75rem; /* Make alt text smaller on mobile */
             }
             .number-display {
-                font-size: 4rem;
+                font-size: 3.8rem; /* Adjusted for mobile, tiny bit smaller */
                 padding: 1rem 1.5rem;
                 min-width: unset;
                 width: 100%;
                 margin-bottom: 1.5rem; /* Adjusted margin for mobile */
             }
             .control-button {
-                font-size: 1.4rem;
-                padding: 0.8rem 1.8rem;
+                font-size: 1.3rem; /* Adjusted for mobile */
+                padding: 0.7rem 1.6rem; /* Adjusted for mobile */
             }
             .called-numbers-columns {
                 flex-direction: column; /* Stack columns vertically on mobile */
@@ -393,29 +393,29 @@
                 margin-bottom: 0.75rem; /* Add space between stacked columns */
             }
             .called-column-header {
-                font-size: 1.5rem;
+                font-size: 1.4rem; /* Adjusted for mobile */
             }
             .called-number-item {
-                font-size: 1.2rem;
+                font-size: 1.1rem; /* Adjusted for mobile */
             }
             .rules-section {
-                font-size: 1rem;
+                font-size: 0.95rem; /* Adjusted for mobile */
                 padding: 1.5rem;
             }
             .rules-section h3 {
-                font-size: 1.75rem;
+                font-size: 1.6rem; /* Adjusted for mobile */
             }
             .reset-button {
                 bottom: 1rem;
                 right: 1rem;
-                padding: 0.8rem 1.5rem;
-                font-size: 1.4rem;
+                padding: 0.7rem 1.4rem; /* Adjusted for mobile */
+                font-size: 1.3rem; /* Adjusted for mobile */
             }
             .modal-content {
                 padding: 1rem;
             }
             .modal-close-button {
-                font-size: 1.5rem;
+                font-size: 1.4rem; /* Adjusted for mobile */
                 top: 0.5rem;
                 right: 0.5rem;
             }
@@ -433,10 +433,10 @@
                 flex-basis: auto;
             }
             .bingo-column-header {
-                font-size: 1.5rem;
+                font-size: 1.4rem; /* Adjusted for mobile */
             }
             .all-number-item {
-                font-size: 1rem;
+                font-size: 0.95rem; /* Adjusted for mobile */
             }
         }
     </style>
@@ -464,7 +464,6 @@
             <h2 class="text-3xl font-bold text-gray-200 mb-4 text-center">Called Numbers</h2>
             <div id="calledNumbersGrid" class="called-numbers-columns">
                 <!-- Columns for B, I, N, G, O will be dynamically added here by JavaScript -->
-                <p id="noNumbersYet" class="text-gray-400 text-center col-span-full text-lg">No numbers called yet.</p>
             </div>
         </div>
 
@@ -521,7 +520,7 @@
         const currentNumberDisplay = document.getElementById('currentNumberDisplay');
         const resetGameBtn = document.getElementById('resetGameBtn');
         const calledNumbersGrid = document.getElementById('calledNumbersGrid'); // This is now the container for columns
-        const noNumbersYetMsg = document.getElementById('noNumbersYet');
+        // const noNumbersYetMsg = document.getElementById('noNumbersYet'); // Removed as per user request
         const showAllNumbersBtn = document.getElementById('showAllNumbersBtn');
         const allNumbersModal = document.getElementById('allNumbersModal');
         const closeModalBtn = document.getElementById('closeModalBtn');
@@ -557,7 +556,7 @@
             currentNumberDisplay.textContent = '--';
             
             // Clear and re-create column structure for called numbers
-            calledNumbersGrid.innerHTML = '';
+            calledNumbersGrid.innerHTML = ''; // Clear everything first
             for (const letter of bingoLetters) {
                 const columnDiv = document.createElement('div');
                 columnDiv.classList.add('called-column');
@@ -572,10 +571,7 @@
                 calledColumns[letter] = columnDiv; // Store reference to the column element
             }
             
-            // Ensure noNumbersYetMsg is properly placed and visible initially
-            calledNumbersGrid.appendChild(noNumbersYetMsg);
-            noNumbersYetMsg.style.display = 'block';
-
+            // The 'noNumbersYetMsg' element is no longer used, so no need to manipulate it here.
 
             updateAllCallableNumbersDisplay(); // Update the modal's display
             
@@ -586,18 +582,31 @@
         }
 
         /**
-         * Adds a number to the called list and updates the UI.
-         * This function is now called when a number in the modal is clicked.
+         * Toggles the called state of a bingo number.
+         * If the number is called, it becomes uncalled. If uncalled, it becomes called.
          * @param {string} combination - The bingo combination (e.g., "B-7").
          */
-        function callNumberFromModal(combination) {
-            if (calledCombinations.has(combination)) {
-                console.log(`${combination} has already been called.`);
-                return;
+        function toggleNumberCalledState(combination) {
+            const isCalled = calledCombinations.has(combination);
+            let lastDisplayUpdate = null;
+
+            if (isCalled) {
+                // Uncall the number
+                calledCombinations.delete(combination);
+                const index = calledNumbersDisplay.indexOf(combination);
+                if (index > -1) {
+                    calledNumbersDisplay.splice(index, 1);
+                }
+                console.log(`Uncalled: ${combination}. Total unique called: ${calledCombinations.size}`);
+            } else {
+                // Call the number
+                calledCombinations.add(combination);
+                calledNumbersDisplay.push(combination);
+                lastDisplayUpdate = combination;
+                console.log(`Called: ${combination}. Total unique called: ${calledCombinations.size}`);
             }
 
-            calledCombinations.add(combination);
-            calledNumbersDisplay.push(combination);
+            // Always re-sort the display array to maintain order
             calledNumbersDisplay.sort((a, b) => {
                 const letterOrder = bingoLetters.indexOf(a.charAt(0)) - bingoLetters.indexOf(b.charAt(0));
                 if (letterOrder !== 0) return letterOrder;
@@ -606,15 +615,24 @@
                 return numA - numB;
             });
 
-            currentNumberDisplay.textContent = combination;
+            // Update current number display
+            if (lastDisplayUpdate) {
+                currentNumberDisplay.textContent = lastDisplayUpdate;
+            } else if (calledNumbersDisplay.length > 0) {
+                // If the removed number was the current display, set to the new last number or '--'
+                if (!calledCombinations.has(currentNumberDisplay.textContent)) {
+                    currentNumberDisplay.textContent = calledNumbersDisplay[calledNumbersDisplay.length - 1] || '--';
+                }
+            } else {
+                currentNumberDisplay.textContent = '--';
+            }
             currentNumberDisplay.classList.remove('pop');
             void currentNumberDisplay.offsetWidth; // Trigger reflow
             currentNumberDisplay.classList.add('pop');
 
-            updateCalledNumbersDisplay(); // Refresh the main grid of called numbers
-            updateAllCallableNumbersDisplay(); // Refresh the modal's display to mark the number as called
 
-            console.log(`Called: ${combination}. Total unique called: ${calledCombinations.size}`);
+            updateCalledNumbersDisplay(); // Refresh the main grid of called numbers
+            updateAllCallableNumbersDisplay(); // Refresh the modal's display to reflect the change
         }
 
         /**
@@ -632,9 +650,10 @@
 
             allPossibleNumbers.forEach(combination => {
                 if (!calledCombinations.has(combination)) {
+                    // Directly add to set and display array for efficiency in this bulk operation
                     calledCombinations.add(combination);
                     calledNumbersDisplay.push(combination);
-                    lastCalledCombination = combination; // Keep track of the last one
+                    lastCalledCombination = combination; // Keep track of the last one added
                 }
             });
 
@@ -647,23 +666,27 @@
                 return numA - numB;
             });
 
-            // Update current number display with the last one called, or a default
-            currentNumberDisplay.textContent = lastCalledCombination || '--';
-            currentNumberDisplay.classList.remove('pop');
-            void currentNumberDisplay.offsetWidth; // Trigger reflow
-            currentNumberDisplay.classList.add('pop');
+            // If any numbers were newly added, ensure current display updates to the last one added
+            if (lastCalledCombination) { // Check if anything was actually selected
+                currentNumberDisplay.textContent = lastCalledCombination;
+                currentNumberDisplay.classList.remove('pop');
+                void currentNumberDisplay.offsetWidth; // Trigger reflow
+                currentNumberDisplay.classList.add('pop');
+            } else if (calledNumbersDisplay.length === 0) {
+                 // If no numbers were added and list is empty
+                currentNumberDisplay.textContent = '--';
+            }
 
             updateCalledNumbersDisplay();
             updateAllCallableNumbersDisplay(); // Refresh modal to show all numbers as called
 
             console.log('All uncalled numbers selected.');
-            // Optionally close the modal after selecting all
-            allNumbersModal.classList.remove('show');
+            allNumbersModal.classList.remove('show'); // Optionally close the modal
         }
 
         /**
          * Updates the display of all previously called numbers in the main grid (now columnar).
-         * Handles showing/hiding the "No numbers yet" message.
+         * The `noNumbersYetMsg` is no longer managed here.
          */
         function updateCalledNumbersDisplay() {
             // Clear numbers from all columns first
@@ -675,39 +698,27 @@
                 }
             }
 
-            if (calledNumbersDisplay.length === 0) {
-                // If no numbers have been called, ensure the "No numbers yet" message is visible
-                calledNumbersGrid.appendChild(noNumbersYetMsg); // Re-add to the main container
-                noNumbersYetMsg.style.display = 'block';
-            } else {
-                // If numbers have been called, hide the "No numbers yet" message
-                if (noNumbersYetMsg.parentNode === calledNumbersGrid) {
-                    calledNumbersGrid.removeChild(noNumbersYetMsg);
-                }
+            // Add numbers to their respective columns, maintaining numerical order
+            const numbersByColumn = { 'B': [], 'I': [], 'N': [], 'G': [], 'O': [] };
+            calledNumbersDisplay.forEach(combination => {
+                const letter = combination.charAt(0);
+                const number = parseInt(combination.substring(combination.indexOf('-') + 1), 10);
+                numbersByColumn[letter].push({ combination, number });
+            });
 
-                // Add numbers to their respective columns, maintaining numerical order
-                // Create a temporary object to hold numbers for each column, then sort and append
-                const numbersByColumn = { 'B': [], 'I': [], 'N': [], 'G': [], 'O': [] };
-                calledNumbersDisplay.forEach(combination => {
-                    const letter = combination.charAt(0);
-                    const number = parseInt(combination.substring(combination.indexOf('-') + 1), 10);
-                    numbersByColumn[letter].push({ combination, number });
-                });
-
-                for (const letter of bingoLetters) {
-                    numbersByColumn[letter].sort((a, b) => a.number - b.number); // Sort numerically
-                    const targetColumn = calledColumns[letter];
-                    if (targetColumn) {
-                        numbersByColumn[letter].forEach(item => {
-                            const numberDiv = document.createElement('div');
-                            numberDiv.classList.add('called-number-item');
-                            numberDiv.textContent = item.combination;
-                            targetColumn.appendChild(numberDiv);
-                        });
-                    }
+            for (const letter of bingoLetters) {
+                numbersByColumn[letter].sort((a, b) => a.number - b.number); // Sort numerically
+                const targetColumn = calledColumns[letter];
+                if (targetColumn) {
+                    numbersByColumn[letter].forEach(item => {
+                        const numberDiv = document.createElement('div');
+                        numberDiv.classList.add('called-number-item');
+                        numberDiv.textContent = item.combination;
+                        numberDiv.dataset.combination = item.combination; // Store combination for click listener
+                        numberDiv.addEventListener('click', () => toggleNumberCalledState(item.combination)); // Add click listener
+                        targetColumn.appendChild(numberDiv);
+                    });
                 }
-                // No need to scroll a single grid, but could scroll individual columns if they overflow
-                // For now, overall grid overflow is managed by max-height
             }
         }
 
@@ -737,9 +748,9 @@
 
                     if (calledCombinations.has(combination)) {
                         numberDiv.classList.add('called');
-                    } else {
-                        numberDiv.addEventListener('click', () => callNumberFromModal(combination));
                     }
+                    // Attach event listener to ALL items in the modal for toggling
+                    numberDiv.addEventListener('click', () => toggleNumberCalledState(combination));
                     columnDiv.appendChild(numberDiv);
                 }
                 allNumbersGridContainer.appendChild(columnDiv);
