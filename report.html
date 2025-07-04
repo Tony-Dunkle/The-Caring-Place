@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Caring Place - Activities Report</title>
+    <!-- Favicon link (you might want to replace this with a Caring Place logo) -->
+    <link rel="icon" type="image/png" href="https://placehold.co/32x32/007bff/ffffff?text=CP" onerror="this.href='https://placehold.co/32x32/007bff/ffffff?text=CP';">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- html2pdf.js CDN for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+            color: #333;
+        }
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* Modal specific styles (not directly used in this fix but kept for consistency) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-2xl */
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            position: relative;
+            width: 500px;
+        }
+
+        /* Loading indicator styles */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3b82f6; /* Blue-500 */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Styles for the PDF content generation - now off-screen */
+        #pdfContent {
+            position: absolute; /* Position off-screen */
+            left: -9999px; /* Move far to the left */
+            width: 210mm; /* A4 width */
+            min-height: 297mm; /* A4 height */
+            padding: 20mm;
+            box-sizing: border-box;
+            background-color: white;
+            font-family: 'Inter', sans-serif;
+            color: #333;
+            font-size: 11pt;
+            line-height: 1.5;
+        }
+        #pdfContent h1, #pdfContent h2, #pdfContent h3 {
+            font-weight: bold;
+            margin-bottom: 0.5em;
+        }
+        #pdfContent h1 {
+            font-size: 20pt;
+            color: #1e3a8a; /* Darker blue for headings */
+            text-align: center;
+        }
+        #pdfContent h2 {
+            font-size: 16pt;
+            color: #1e3a8a;
+            border-bottom: 1px solid #d1d5db;
+            padding-bottom: 0.2em;
+            margin-top: 1em;
+        }
+        #pdfContent h3 {
+            font-size: 13pt;
+            color: #1e3a8a;
+            margin-top: 0.8em;
+        }
+        #pdfContent p {
+            margin-bottom: 0.5em;
+        }
+        #pdfContent .section-item {
+            margin-bottom: 0.3em;
+        }
+        #pdfContent .header-logo {
+            display: block;
+            margin: 0 auto 10mm auto;
+            width: 80mm; /* Adjust size as needed for PDF */
+            height: auto;
+        }
+        #pdfContent .footer-text {
+            text-align: center;
+            font-size: 9pt;
+            color: #6b7280;
+            margin-top: 20mm;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Header Section -->
+    <header class="bg-blue-700 text-white shadow-lg py-4 px-6 md:px-12 flex items-center justify-between sticky top-0 z-50 rounded-b-lg relative">
+        <div class="flex items-center">
+            <!-- Logo for The Caring Place -->
+            <img src="https://placehold.co/64x64/007bff/ffffff?text=TCP" alt="The Caring Place Logo" class="mr-4 w-16 h-16 object-contain" onerror="this.onerror=null; this.src='https://placehold.co/64x64/007bff/ffffff?text=TCP';">
+            <h1 class="text-2xl md:text-3xl font-bold">The Caring Place</h1>
+        </div>
+        <h2 class="text-xl md:text-2xl font-semibold">Activities Department</h2>
+    </header>
+
+    <!-- Main Content Section -->
+    <main class="w-full px-4 md:px-8 py-12 flex justify-center items-start">
+        <!-- Activities Report Generator Section -->
+        <section class="bg-blue-50 p-8 rounded-lg shadow-inner w-full max-w-2xl">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Activities Report Generator</h2>
+            <div class="bg-white p-8 rounded-xl shadow-2xl w-full">
+
+                <!-- Activity Type Dropdown -->
+                <div class="mb-6">
+                    <label for="activityType" class="block text-gray-700 text-sm font-semibold mb-2">
+                        Activity Type
+                    </label>
+                    <select id="activityType"
+                            name="activityType"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out shadow-sm text-gray-800">
+                        <option value="">Select Activity Type</option>
+                        <option value="Group Activity">Group Activity</option>
+                        <option value="Individual Visit">Individual Visit</option>
+                        <option value="Special Event">Special Event</option>
+                        <option value="Outing">Outing</option>
+                        <option value="Therapeutic Activity">Therapeutic Activity</option>
+                    </select>
+                </div>
+
+                <!-- Resident Attendance - First Floor -->
+                <div class="mb-6">
+                    <label for="residentsFirstFloor" class="block text-gray-700 text-sm font-semibold mb-2">
+                        Residents Attended (First Floor)
+                    </label>
+                    <input type="number"
+                           id="residentsFirstFloor"
+                           name="residentsFirstFloor"
+                           min="0"
+                           value="0"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out shadow-sm text-gray-800">
+                </div>
+
+                <!-- Resident Attendance - Second Floor -->
+                <div class="mb-6">
+                    <label for="residentsSecondFloor" class="block text-gray-700 text-sm font-semibold mb-2">
+                        Residents Attended (Second Floor)
+                    </label>
+                    <input type="number"
+                           id="residentsSecondFloor"
+                           name="residentsSecondFloor"
+                           min="0"
+                           value="0"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out shadow-sm text-gray-800">
+                </div>
+
+                <!-- Activity Assistant Submitting -->
+                <div class="mb-6">
+                    <label for="activityAssistant" class="block text-gray-700 text-sm font-semibold mb-2">
+                        Activity Assistant Submitting
+                    </label>
+                    <input type="text"
+                           id="activityAssistant"
+                           name="activityAssistant"
+                           placeholder="Enter your name"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out shadow-sm placeholder-gray-400 text-gray-800">
+                </div>
+
+                <!-- Date & Time of Activity -->
+                <div class="mb-6 flex space-x-4">
+                    <div class="w-1/2">
+                        <label for="activityDate" class="block text-gray-700 text-sm font-semibold mb-2">
+                            Date of Activity
+                        </label>
+                        <input type="date"
+                               id="activityDate"
+                               name="activityDate"
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out shadow-sm text-gray-800">
+                    </div>
+                    <div class="w-1/2">
+                        <label for="activityTime" class="block text-gray-700 text-sm font-semibold mb-2">
+                            Time of Activity
+                        </label>
+                        <input type="time"
+                               id="activityTime"
+                               name="activityTime"
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out shadow-sm text-gray-800">
+                    </div>
+                </div>
+
+                <!-- Activity Narrative -->
+                <div class="mb-6">
+                    <label for="activityNarrative" class="block text-gray-700 text-sm font-semibold mb-2">
+                        Activity Narrative
+                    </label>
+                    <textarea id="activityNarrative"
+                              name="activityNarrative"
+                              rows="8"
+                              placeholder="Describe the activity, resident engagement, notable moments, and any challenges or successes."
+                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out shadow-sm resize-y placeholder-gray-400 text-gray-800"></textarea>
+                </div>
+
+                <!-- Text Area: Generated Report -->
+                <div class="mb-6 relative">
+                    <label for="generatedReport" class="block text-gray-700 text-sm font-semibold mb-2">
+                        Generated Report
+                    </label>
+                    <div class="flex space-x-2 absolute top-0 right-0 mt-2 mr-2">
+                        <button type="button"
+                                id="copyReportBtn"
+                                class="bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold py-1 px-3 rounded-lg shadow-md transition duration-200 ease-in-out hidden"
+                                title="Copy report to clipboard">
+                            Copy Report
+                        </button>
+                        <button type="button"
+                                id="downloadPdfBtn"
+                                class="bg-green-500 hover:bg-green-600 text-white text-xs font-bold py-1 px-3 rounded-lg shadow-md transition duration-200 ease-in-out hidden"
+                                title="Download report as PDF">
+                            Download PDF
+                        </button>
+                    </div>
+                    <textarea id="generatedReport"
+                              name="generatedReport"
+                              rows="10"
+                              readonly
+                              placeholder="Your generated activities report will appear here..."
+                              class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out shadow-sm resize-y text-gray-800 pt-10"></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="mt-8">
+                    <button type="button"
+                            id="generateReportBtn"
+                            class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 ease-in-out shadow-md">
+                        Generate Activities Report
+                    </button>
+                </div>
+
+                <!-- Loading Indicator for AI Generation -->
+                <div id="loadingIndicator" class="hidden text-center text-blue-600 mt-4 font-semibold">
+                    Generating report... Please wait.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Hidden div for PDF content generation -->
+    <div id="pdfContent">
+        <img src="https://placehold.co/250x60/007bff/ffffff?text=THE+CARING+PLACE" alt="The Caring Place Logo" class="header-logo">
+        <h1 class="text-center">ACTIVITIES REPORT</h1>
+        <p class="text-center text-gray-600 text-sm">Serving the citizens of Franklin, Pennsylvania, and the surrounding communities.</p>
+        <p class="text-center text-gray-600 text-xs mt-2" id="pdfReportGeneratedBy"></p>
+
+        <h2 class="mt-8">Activity Details</h2>
+        <p class="section-item"><strong>Activity Type:</strong> <span id="pdfActivityType"></span></p>
+        <p class="section-item"><strong>Date of Activity:</strong> <span id="pdfActivityDate"></span></p>
+        <p class="section-item"><strong>Time of Activity:</strong> <span id="pdfActivityTime"></span></p>
+
+        <h2>Attendance</h2>
+        <p class="section-item"><strong>First Floor Residents:</strong> <span id="pdfResidentsFirstFloor"></span></p>
+        <p class="section-item"><strong>Second Floor Residents:</strong> <span id="pdfResidentsSecondFloor"></span></p>
+        <p class="section-item"><strong>Total Residents Attended:</strong> <span id="pdfTotalResidents"></span></p>
+
+        <h2>Activity Assistant</h2>
+        <p class="section-item"><span id="pdfActivityAssistant"></span></p>
+
+        <h2>Narrative</h2>
+        <p id="pdfActivityNarrative"></p>
+
+        <div class="footer-text">
+            <p>&copy; 2025 The Caring Place. All rights reserved.</p>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-800 text-white py-6 px-6 md:px-12 rounded-t-lg text-center">
+        <p class="text-gray-500 text-sm">&copy; 2025 The Caring Place. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Get references to elements
+        const activityTypeSelect = document.getElementById('activityType');
+        const residentsFirstFloorInput = document.getElementById('residentsFirstFloor');
+        const residentsSecondFloorInput = document.getElementById('residentsSecondFloor');
+        const activityAssistantInput = document.getElementById('activityAssistant');
+        const activityDateInput = document.getElementById('activityDate');
+        const activityTimeInput = document.getElementById('activityTime');
+        const activityNarrativeTextarea = document.getElementById('activityNarrative');
+        const generatedReportTextarea = document.getElementById('generatedReport');
+        const generateReportBtn = document.getElementById('generateReportBtn');
+        const copyReportBtn = document.getElementById('copyReportBtn');
+        const downloadPdfBtn = document.getElementById('downloadPdfBtn'); // New PDF button
+        const loadingIndicator = document.getElementById('loadingIndicator');
+
+        // References to PDF content elements
+        const pdfContentDiv = document.getElementById('pdfContent');
+        const pdfReportGeneratedBy = document.getElementById('pdfReportGeneratedBy');
+        const pdfActivityType = document.getElementById('pdfActivityType');
+        const pdfActivityDate = document.getElementById('pdfActivityDate');
+        const pdfActivityTime = document.getElementById('pdfActivityTime');
+        const pdfResidentsFirstFloor = document.getElementById('pdfResidentsFirstFloor');
+        const pdfResidentsSecondFloor = document.getElementById('pdfResidentsSecondFloor');
+        const pdfTotalResidents = document.getElementById('pdfTotalResidents');
+        const pdfActivityAssistant = document.getElementById('pdfActivityAssistant');
+        const pdfActivityNarrative = document.getElementById('pdfActivityNarrative');
+
+
+        // IMPORTANT: Gemini API Key Configuration
+        // If you are running this code on YOUR OWN WEB SERVER:
+        // 1. Go to Google AI Studio (https://aistudio.google.com/app/apikey) or Google Cloud.
+        // 2. Generate a new API key.
+        // 3. Replace the empty string below with your ACTUAL, VALID API key.
+        //    Example: const apiKey = "YOUR_ACTUAL_GEMINI_API_KEY_HERE";
+        // If you are running this within the Google Canvas environment, leave this as "".
+        const apiKey = "AIzaSyCsWMWfmCfR59mcAy4as7XR95YY__7hayc"; // Leave empty for Canvas environment, replace with your key if self-hosting
+
+        // Add event listener to the "Generate Activities Report" button
+        generateReportBtn.addEventListener('click', async () => {
+            const activityType = activityTypeSelect.value;
+            const residentsFirstFloor = residentsFirstFloorInput.value;
+            const residentsSecondFloor = residentsSecondFloorInput.value;
+            const activityAssistant = activityAssistantInput.value.trim();
+            const activityDate = activityDateInput.value;
+            const activityTime = activityTimeInput.value;
+            const activityNarrative = activityNarrativeTextarea.value.trim();
+
+            const now = new Date();
+            const reportDate = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            const reportTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+            generatedReportTextarea.value = '';
+            copyReportBtn.classList.add('hidden');
+            downloadPdfBtn.classList.add('hidden'); // Hide PDF button initially
+            loadingIndicator.classList.remove('hidden');
+
+            let requiredFieldsFilled = true;
+
+            // Basic validation for required fields
+            if (!activityType || !activityAssistant || !activityDate || !activityTime || !activityNarrative || residentsFirstFloor === '' || residentsSecondFloor === '') {
+                requiredFieldsFilled = false;
+            }
+
+            if (!requiredFieldsFilled) {
+                generatedReportTextarea.value = 'Please fill in all required fields (Activity Type, Residents Attended, Activity Assistant, Date & Time, and Activity Narrative) to generate the report.';
+                loadingIndicator.classList.add('hidden');
+                return;
+            }
+
+            // Determine which API key to use
+            const finalApiKey = typeof __api_key__ !== 'undefined' ? __api_key__ : apiKey;
+
+            if (!finalApiKey) {
+                generatedReportTextarea.value = 'Error: Gemini API Key is not configured. Please ensure your API key is correctly set in the JavaScript code. If running on your own server, replace the empty string for `apiKey` with your actual key.';
+                console.error('API Key not configured. Please set your actual Gemini API key if running on your own server.');
+                loadingIndicator.classList.add('hidden');
+                return;
+            }
+
+            const prompt = `Generate a detailed, professional, and concise Activities Report for "The Caring Place Activities Department". The report must strictly adhere to the information provided below. Do not include any information that is not directly deducible from the provided inputs. The output must strictly follow the format provided below, with no additional text, introductory phrases, or markdown formatting (like bold, italics, headers, or bullet points). Ensure all fields are populated appropriately based on the input. If a field is not directly deducible from the input, provide a reasonable placeholder or "N/A".
+
+Report Generation Date: ${reportDate}
+Report Generation Time: ${reportTime} ${timeZone}
+
+Activity Type: ${activityType}
+Residents Attended (First Floor): ${residentsFirstFloor}
+Residents Attended (Second Floor): ${residentsSecondFloor}
+Activity Assistant Submitting: ${activityAssistant}
+Date of Activity: ${activityDate}
+Time of Activity: ${activityTime}
+Activity Narrative: ${activityNarrative}
+
+---
+Strict Output Format:
+ACTIVITIES REPORT - The Caring Place
+
+Date of Report: ${reportDate}
+Time of Report: ${reportTime} ${timeZone}
+
+Activity Details:
+Activity Type: ${activityType}
+Date of Activity: ${activityDate}
+Time of Activity: ${activityTime}
+
+Attendance:
+First Floor Residents: ${residentsFirstFloor}
+Second Floor Residents: ${residentsSecondFloor}
+Total Residents Attended: ${parseInt(residentsFirstFloor) + parseInt(residentsSecondFloor)}
+
+Activity Assistant: ${activityAssistant}
+
+Narrative:
+[Detailed description of the activity, resident engagement, notable moments, and any challenges or successes, based on the 'Activity Narrative' provided. Focus on observations and factual accounts.]
+`;
+
+            try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+
+                const payload = { contents: chatHistory };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${finalApiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorBody = await response.text();
+                    generatedReportTextarea.value = `Error: API call failed with status ${response.status}. Details: ${errorBody}`;
+                    console.error('API Error Response:', response.status, errorBody);
+                    loadingIndicator.classList.add('hidden');
+                    return;
+                }
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    let generatedText = result.candidates[0].content.parts[0].text;
+                    generatedText = generatedText.replace(/[<>]/g, '').trim(); // Sanitize output
+                    generatedReportTextarea.value = generatedText;
+
+                    // Populate the hidden PDF content div
+                    pdfReportGeneratedBy.textContent = `Report generated by ${activityAssistant} on ${reportDate} at ${reportTime} ${timeZone}`;
+                    pdfActivityType.textContent = activityType;
+                    pdfActivityDate.textContent = activityDate;
+                    pdfActivityTime.textContent = activityTime;
+                    pdfResidentsFirstFloor.textContent = residentsFirstFloor;
+                    pdfResidentsSecondFloor.textContent = residentsSecondFloor;
+                    pdfTotalResidents.textContent = parseInt(residentsFirstFloor) + parseInt(residentsSecondFloor);
+                    pdfActivityAssistant.textContent = activityAssistant;
+                    pdfActivityNarrative.textContent = activityNarrative; // Use the raw narrative for PDF
+
+                    copyReportBtn.classList.remove('hidden');
+                    downloadPdfBtn.classList.remove('hidden'); // Show PDF button
+                } else {
+                    generatedReportTextarea.value = 'Failed to generate report. Gemini API returned an unexpected structure or no content.';
+                    console.error('Gemini API returned an unexpected structure or no content:', result);
+                    copyReportBtn.classList.add('hidden');
+                    downloadPdfBtn.classList.add('hidden');
+                }
+            } catch (error) {
+                generatedReportTextarea.value = `An error occurred: ${error.message}. Please check your network connection and try again.`;
+                console.error('Error during API call or processing:', error);
+                copyReportBtn.classList.add('hidden');
+                downloadPdfBtn.classList.add('hidden');
+            } finally {
+                loadingIndicator.classList.add('hidden');
+            }
+        });
+
+        // Add event listener for the Copy Report button
+        copyReportBtn.addEventListener('click', () => {
+            let textToCopy = generatedReportTextarea.value.trim().replace(/[<>]/g, '');
+
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = textToCopy;
+            tempTextArea.style.position = 'absolute';
+            tempTextArea.style.left = '-9999px';
+            document.body.appendChild(tempTextArea);
+
+            tempTextArea.select();
+            document.execCommand('copy'); // Use execCommand for broader compatibility in iframes
+
+            const originalText = copyReportBtn.textContent;
+            copyReportBtn.textContent = 'Copied!';
+            setTimeout(() => {
+                copyReportBtn.textContent = originalText;
+            }, 1500);
+        });
+
+        // Add event listener for the Download PDF button
+        downloadPdfBtn.addEventListener('click', () => {
+            const element = document.getElementById('pdfContent');
+            const opt = {
+                margin:       10,
+                filename:     'Activities_Report.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            // Use html2pdf to generate and download the PDF
+            html2pdf().set(opt).from(element).save();
+        });
+
+        // Set current date and time as default for activity date/time inputs
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = (today.getMonth() + 1).toString().padStart(2, '0');
+            const day = today.getDate().toString().padStart(2, '0');
+            activityDateInput.value = `${year}-${month}-${day}`;
+
+            const hours = today.getHours().toString().padStart(2, '0');
+            const minutes = today.getMinutes().toString().padStart(2, '0');
+            activityTimeInput.value = `${hours}:${minutes}`;
+        });
+    </script>
+</body>
+</html>
