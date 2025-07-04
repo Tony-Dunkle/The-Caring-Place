@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Information Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Light gray background */
+        }
+        /* Custom scrollbar for a sleeker look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <div class="min-h-screen flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8">
+
+        <!-- Header Section -->
+        <header class="w-full max-w-4xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-6 rounded-lg shadow-lg mb-8">
+            <h1 class="text-4xl font-bold text-center mb-2">Company Information Hub</h1>
+            <p class="text-lg text-center opacity-90">Your quick guide to essential company contacts and resources.</p>
+        </header>
+
+        <!-- Navigation Bar -->
+        <nav class="w-full max-w-4xl bg-white p-4 rounded-lg shadow-md mb-8 flex flex-wrap justify-center gap-4">
+            <a href="#phone-extensions" class="px-4 py-2 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors duration-200 font-medium text-sm sm:text-base">Phone Extensions</a>
+            <a href="#calling-tree" class="px-4 py-2 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors duration-200 font-medium text-sm sm:text-base">Calling Tree</a>
+            <a href="#common-info" class="px-4 py-2 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors duration-200 font-medium text-sm sm:text-base">Common Info</a>
+            <a href="#managers" class="px-4 py-2 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors duration-200 font-medium text-sm sm:text-base">Managers</a>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="w-full max-w-4xl space-y-8">
+
+            <!-- Phone Extensions Section -->
+            <section id="phone-extensions" class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-3xl font-semibold text-gray-900 mb-4 border-b pb-2 border-gray-200">📞 Phone Extensions</h2>
+                <div class="mb-4 text-gray-700">
+                    <p>Loading phone extensions from <code class="font-mono text-sm bg-gray-100 p-1 rounded">extension.csv</code>. If unavailable, data will be fetched from the fallback GitHub link.</p>
+                </div>
+                <div id="extension-loading" class="text-center py-4 text-blue-600 font-medium hidden">
+                    Loading extensions...
+                </div>
+                <div id="extension-error" class="text-center py-4 text-red-600 font-medium hidden">
+                    Failed to load extensions. Please try again later or check the fallback link.
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Extension</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact Person</th>
+                            </tr>
+                        </thead>
+                        <tbody id="extensions-table-body" class="bg-white divide-y divide-gray-200">
+                            <!-- Extensions will be loaded here by JavaScript -->
+                            <tr>
+                                <td colspan="3" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                    Loading data...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4 text-center">
+                    <a id="fallback-link" href="https://github.com/Tony-Dunkle/The-Caring-Place/blob/92c8f5e89fee98c31ad63db0fa7c1907bd00bd85/extension.csv" target="_blank" class="text-blue-600 hover:underline text-sm">
+                        View raw CSV data on GitHub (Fallback Link)
+                    </a>
+                </div>
+            </section>
+
+            <!-- Calling Tree Section -->
+            <section id="calling-tree" class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-3xl font-semibold text-gray-900 mb-4 border-b pb-2 border-gray-200">🌳 Calling Tree</h2>
+                <p class="text-gray-700 mb-4">In case of emergency or critical announcements, follow this calling tree:</p>
+                <ol class="list-decimal list-inside space-y-2 text-gray-700">
+                    <li><strong>Team Leads:</strong> Contact your immediate team lead.</li>
+                    <li><strong>Department Managers:</strong> If team lead is unavailable, contact your department manager.</li>
+                    <li><strong>HR Department (Ext. 201):</strong> For general company-wide announcements or HR-related emergencies.</li>
+                    <li><strong>IT Department (Ext. 202):</strong> For system outages or technical emergencies.</li>
+                    <li><strong>Emergency Coordinator (Ext. 200):</strong> For severe incidents requiring company-wide action.</li>
+                </ol>
+                <div class="mt-4 p-4 bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-md">
+                    <strong>Note:</strong> Please keep this information confidential and use it only for its intended purpose.
+                </div>
+            </section>
+
+            <!-- Commonly Used Information Section -->
+            <section id="common-info" class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-3xl font-semibold text-gray-900 mb-4 border-b pb-2 border-gray-200">ℹ️ Commonly Used Information</h2>
+                <ul class="list-disc list-inside space-y-2 text-gray-700">
+                    <li><strong>Company Address:</strong> 123 Business Park, Suite 400, Anytown, USA 12345</li>
+                    <li><strong>Main Office Line:</strong> (555) 123-4567</li>
+                    <li><strong>Fax Number:</strong> (555) 123-4568</li>
+                    <li><strong>General Support Email:</strong> <a href="mailto:support@company.com" class="text-blue-600 hover:underline">support@company.com</a></li>
+                    <li><strong>IT Helpdesk Portal:</strong> <a href="#" class="text-blue-600 hover:underline">helpdesk.company.com</a> (Internal Link)</li>
+                    <li><strong>HR Portal:</strong> <a href="#" class="text-blue-600 hover:underline">hr.company.com</a> (Internal Link)</li>
+                    <li><strong>Company Holiday Schedule:</strong> Available on the HR Portal.</li>
+                    <li><strong>Dress Code Policy:</strong> Business Casual, unless otherwise specified for client meetings.</li>
+                </ul>
+            </section>
+
+            <!-- Manager Names & Extensions Section -->
+            <section id="managers" class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-3xl font-semibold text-gray-900 mb-4 border-b pb-2 border-gray-200">🧑‍💼 Manager Names & Extensions</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Manager Name</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Extension</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">John Doe</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Sales</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">301</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600"><a href="mailto:john.doe@company.com" class="hover:underline">john.doe@company.com</a></td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Jane Miller</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Marketing</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">302</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600"><a href="mailto:jane.miller@company.com" class="hover:underline">jane.miller@company.com</a></td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Peter Jones</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">IT</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">303</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600"><a href="mailto:peter.jones@company.com" class="hover:underline">peter.jones@company.com</a></td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Sarah Davis</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Human Resources</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">304</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600"><a href="mailto:sarah.davis@company.com" class="hover:underline">sarah.davis@company.com</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer Section -->
+        <footer class="w-full max-w-4xl text-center text-gray-600 text-sm mt-8 py-4 border-t border-gray-200">
+            &copy; 2025 Company Name. All rights reserved.
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const extensionsTableBody = document.getElementById('extensions-table-body');
+            const loadingIndicator = document.getElementById('extension-loading');
+            const errorIndicator = document.getElementById('extension-error');
+
+            const csvLocalPath = 'extension.csv';
+            const csvFallbackUrl = 'https://raw.githubusercontent.com/Tony-Dunkle/The-Caring-Place/92c8f5e89fee98c31ad63db0fa7c1907bd00bd85/extension.csv';
+
+            /**
+             * Parses CSV text into an array of objects.
+             * Assumes the first row is the header.
+             * @param {string} csvText - The CSV data as a string.
+             * @returns {Array<Object>} An array of objects, where each object represents a row.
+             */
+            function parseCSV(csvText) {
+                const lines = csvText.trim().split('\n');
+                if (lines.length === 0) return [];
+
+                const headers = lines[0].split(',').map(header => header.trim());
+                const data = [];
+
+                for (let i = 1; i < lines.length; i++) {
+                    const values = lines[i].split(',').map(value => value.trim());
+                    if (values.length === headers.length) {
+                        const row = {};
+                        headers.forEach((header, index) => {
+                            row[header] = values[index];
+                        });
+                        data.push(row);
+                    }
+                }
+                return data;
+            }
+
+            /**
+             * Renders the phone extensions data into the table.
+             * @param {Array<Object>} data - The parsed phone extensions data.
+             */
+            function renderExtensions(data) {
+                extensionsTableBody.innerHTML = ''; // Clear existing rows
+                if (data.length === 0) {
+                    extensionsTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="3" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                No extension data available.
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${row.Department || 'N/A'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.Extension || 'N/A'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row['Contact Person'] || 'N/A'}</td>
+                    `;
+                    extensionsTableBody.appendChild(tr);
+                });
+            }
+
+            /**
+             * Fetches CSV data from a given URL.
+             * @param {string} url - The URL of the CSV file.
+             * @returns {Promise<string>} A promise that resolves with the CSV text.
+             */
+            async function fetchCsvData(url) {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status} from ${url}`);
+                }
+                return await response.text();
+            }
+
+            /**
+             * Loads phone extensions, trying local CSV first, then fallback URL.
+             */
+            async function loadExtensions() {
+                loadingIndicator.classList.remove('hidden');
+                errorIndicator.classList.add('hidden');
+                extensionsTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                            Loading data...
+                        </td>
+                    </tr>
+                `;
+
+                let csvText;
+                try {
+                    // Try to fetch from local path first
+                    csvText = await fetchCsvData(csvLocalPath);
+                } catch (localError) {
+                    console.warn(`Failed to fetch from local path (${csvLocalPath}):`, localError);
+                    try {
+                        // If local fails, try fallback URL
+                        csvText = await fetchCsvData(csvFallbackUrl);
+                    } catch (fallbackError) {
+                        console.error(`Failed to fetch from fallback URL (${csvFallbackUrl}):`, fallbackError);
+                        loadingIndicator.classList.add('hidden');
+                        errorIndicator.classList.remove('hidden');
+                        extensionsTableBody.innerHTML = `
+                            <tr>
+                                <td colspan="3" class="px-6 py-4 whitespace-nowrap text-sm text-red-500 text-center">
+                                    Error loading extensions. Please check your network or the links.
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+                }
+
+                try {
+                    const data = parseCSV(csvText);
+                    renderExtensions(data);
+                } catch (parseError) {
+                    console.error('Error parsing CSV data:', parseError);
+                    loadingIndicator.classList.add('hidden');
+                    errorIndicator.classList.remove('hidden');
+                    extensionsTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="3" class="px-6 py-4 whitespace-nowrap text-sm text-red-500 text-center">
+                                Error processing extension data.
+                            </td>
+                        </tr>
+                    `;
+                } finally {
+                    loadingIndicator.classList.add('hidden');
+                }
+            }
+
+            // Load extensions when the page is ready
+            loadExtensions();
+        });
+    </script>
+</body>
+</html>
